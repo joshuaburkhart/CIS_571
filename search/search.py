@@ -145,14 +145,46 @@ def breadthFirstSearch(problem):
 
   return BFS(initial_node,frontier,explored_states)
 
-
-  
   #util.raiseNotDefined()
       
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+  
+  from game import Directions
+  from util import PriorityQueue
+
+  def UCS(node,frontier,explored_states):
+      if problem.isGoalState(node):
+          return node[1]
+      elif PriorityQueue.isEmpty(frontier):
+          return None
+      else:
+	  while not PriorityQueue.isEmpty(frontier):
+	      new_node = PriorityQueue.pop(frontier)
+              explored_states.append(new_node[0])
+	      successor_candidates = problem.getSuccessors(new_node[0])
+              if successor_candidates:
+	          successor_candidates.reverse()
+                  for candidate in successor_candidates:
+		      c_path = list(new_node[1])
+		      c_path.append(candidate[1])
+                      if candidate[0] not in explored_states:
+	                  if problem.isGoalState(candidate[0]):
+		              print "path:", c_path
+		              return c_path
+	                  PriorityQueue.push(frontier,(candidate[0],c_path),candidate[2])
+
+  initial_node = (problem.getStartState(),[Directions.STOP])
+  frontier = util.PriorityQueue()
+  PriorityQueue.push(frontier,initial_node,1)
+  explored_states = []
+
+  return UCS(initial_node,frontier,explored_states)
+
+
+  
+  #util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
   """
