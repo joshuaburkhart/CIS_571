@@ -82,36 +82,31 @@ def depthFirstSearch(problem):
   print "Start's successors:", problem.getSuccessors(problem.getStartState())
   """
   "*** YOUR CODE HERE ***"
+
+  from game import Directions
   
-  def DFS(node,frontier,explored_states,path_taken):
-      if problem.isGoalState(node):
-          return path_taken
-      elif not problem.getSuccessors(node):
-          return False
-      else:
-          explored_states.append(node)
-          successor_candidates = problem.getSuccessors(node)
-          if successor_candidates:
-	      successor_candidates.reverse()
-              for candidate in successor_candidates:
-                  if candidate not in frontier and candidate[0] not in explored_states:
-                      frontier.append(candidate)
-		      new_node = candidate[0]
-		      path_taken.append(candidate[1])
-		      result = DFS(new_node,frontier,explored_states,path_taken)
-		      if not result: 
-		          path_taken.pop()
-                      else:
-		          return result
-      
   frontier = []
-  explored_states = []
-  path_taken = []
+  explored_states = set([])
+  node = (problem.getStartState(),[],1)
 
-  return DFS(problem.getStartState(),frontier,explored_states,path_taken)
-
-  #util.raiseNotDefined()
-
+  if problem.isGoalState(node[0]):
+      return node[1]
+  frontier.insert(0,node)
+  while True:
+      if not frontier:
+          return None
+      explored_states.add(node[0])
+      successor_candidates = problem.getSuccessors(node[0])
+      for candidate in successor_candidates:
+          path_to_node = list(node[1])
+	  path_to_node.append(candidate[1])
+	  child_node = (candidate[0],path_to_node,candidate[2])
+          if candidate not in frontier and candidate[0] not in explored_states:
+	      if problem.isGoalState(child_node[0]):
+	          return child_node[1]
+	      frontier.insert(0,child_node)
+      node = frontier.pop(0)       
+      
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
