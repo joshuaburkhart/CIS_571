@@ -170,12 +170,12 @@ def aStarSearch(problem, heuristic=nullHeuristic):
   "Search the node that has the lowest combined cost and heuristic first."
   "*** YOUR CODE HERE ***"
 
-  from game import Directions
   from util import PriorityQueue 
-  frontier = util.PriorityQueue()
-  node = (problem.getStartState(),[Directions.STOP])
+  
+  frontier = PriorityQueue()
+  node = (problem.getStartState(),[])
   PriorityQueue.push(frontier,node,0 + heuristic(node[0],problem))
-  explored_states = []
+  explored_states = set([])
 
   if problem.isGoalState(node):
       return node[1]
@@ -184,7 +184,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
   else:
       while not PriorityQueue.isEmpty(frontier):
           new_node = PriorityQueue.pop(frontier)
-          explored_states.append(new_node[0])
+          explored_states.add(new_node[0])
 	  successor_candidates = problem.getSuccessors(new_node[0])
           if successor_candidates:
 	      successor_candidates.reverse()
@@ -193,12 +193,9 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 	          c_path.append(candidate[1])
                   if candidate[0] not in explored_states:
 	              if problem.isGoalState(candidate[0]):
-		          print "path:", c_path
 		          return c_path
 	              PriorityQueue.push(frontier,(candidate[0],c_path),candidate[2] + heuristic(candidate[0],problem))
 
-  #util.raiseNotDefined() 
-  
 # Abbreviations
 bfs = breadthFirstSearch
 dfs = depthFirstSearch
