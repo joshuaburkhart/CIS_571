@@ -112,36 +112,29 @@ def breadthFirstSearch(problem):
   "*** YOUR CODE HERE ***"
  
   from game import Directions
+  
+  frontier = []
+  explored_states = set([])
+  node = (problem.getStartState(),[],1)
 
-  def BFS(node,frontier,explored_states):
-      if problem.isGoalState(node):
-          return node[1]
-      elif not frontier:
+  if problem.isGoalState(node[0]):
+      return node[1]
+  frontier.insert(0,node)
+  while True:
+      if not frontier:
           return None
-      else:
-	  while frontier:
-	      new_node = frontier.pop(0)
-              explored_states.append(new_node[0])
-	      successor_candidates = problem.getSuccessors(new_node[0])
-              if successor_candidates:
-	          successor_candidates.reverse()
-                  for candidate in successor_candidates:
-		      c_path = list(new_node[1])
-		      c_path.append(candidate[1])
-                      if (candidate[0],c_path) not in frontier and candidate[0] not in explored_states:
-	                  if problem.isGoalState(candidate[0]):
-		              print "path:", c_path
-		              return c_path
-	                  frontier.append((candidate[0],c_path))
-
-  initial_node = (problem.getStartState(),[Directions.STOP])
-  frontier = [initial_node]
-  explored_states = []
-
-  return BFS(initial_node,frontier,explored_states)
-
-  #util.raiseNotDefined()
-      
+      explored_states.add(node[0])
+      successor_candidates = problem.getSuccessors(node[0])
+      for candidate in successor_candidates:
+          path_to_node = list(node[1])
+	  path_to_node.append(candidate[1])
+	  child_node = (candidate[0],path_to_node,candidate[2])
+          if candidate not in frontier and candidate[0] not in explored_states:
+	      if problem.isGoalState(child_node[0]):
+	          return child_node[1]
+	      frontier.append(child_node)
+      node = frontier.pop(0)
+     
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
