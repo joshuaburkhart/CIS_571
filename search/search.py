@@ -83,8 +83,6 @@ def depthFirstSearch(problem):
   """
   "*** YOUR CODE HERE ***"
 
-  from game import Directions
-  
   frontier = []
   explored_states = set([])
   node = (problem.getStartState(),[],1)
@@ -111,8 +109,6 @@ def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
   "*** YOUR CODE HERE ***"
  
-  from game import Directions
-  
   frontier = []
   explored_states = set([])
   node = (problem.getStartState(),[],1)
@@ -139,40 +135,29 @@ def uniformCostSearch(problem):
   "Search the node of least total cost first. "
   "*** YOUR CODE HERE ***"
   
-  from game import Directions
   from util import PriorityQueue
 
-  def UCS(node,frontier,explored_states):
-      if problem.isGoalState(node):
-          return node[1]
-      elif PriorityQueue.isEmpty(frontier):
+  frontier = PriorityQueue()
+  explored_states = set([])
+  node = (problem.getStartState(),[],1)
+
+  if problem.isGoalState(node[0]):
+      return node[1]
+  PriorityQueue.push(frontier,node,node[2])
+  while True:
+      if not frontier:
           return None
-      else:
-	  while not PriorityQueue.isEmpty(frontier):
-	      new_node = PriorityQueue.pop(frontier)
-              explored_states.append(new_node[0])
-	      successor_candidates = problem.getSuccessors(new_node[0])
-              if successor_candidates:
-	          successor_candidates.reverse()
-                  for candidate in successor_candidates:
-		      c_path = list(new_node[1])
-		      c_path.append(candidate[1])
-                      if candidate[0] not in explored_states:
-	                  if problem.isGoalState(candidate[0]):
-		              print "path:", c_path
-		              return c_path
-	                  PriorityQueue.push(frontier,(candidate[0],c_path),candidate[2])
-
-  initial_node = (problem.getStartState(),[Directions.STOP])
-  frontier = util.PriorityQueue()
-  PriorityQueue.push(frontier,initial_node,1)
-  explored_states = []
-
-  return UCS(initial_node,frontier,explored_states)
-
-
-  
-  #util.raiseNotDefined()
+      explored_states.add(node[0])
+      successor_candidates = problem.getSuccessors(node[0])
+      for candidate in successor_candidates:
+          path_to_node = list(node[1])
+	  path_to_node.append(candidate[1])
+	  child_node = (candidate[0],path_to_node,candidate[2])
+          if candidate[0] not in explored_states:
+	      if problem.isGoalState(child_node[0]):
+	          return child_node[1]
+	      PriorityQueue.push(frontier,child_node,child_node[2])
+      node = PriorityQueue.pop(frontier)
 
 def nullHeuristic(state, problem=None):
   """
