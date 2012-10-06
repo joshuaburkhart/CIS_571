@@ -366,7 +366,6 @@ def cornersHeuristic(state, problem):
   for cornerIndex in list(state[1]):
 	  cornersLeft.remove(corners[cornerIndex - 1])
 
-  print "cornersLeft: ",cornersLeft
   mDistances = []
   for remainingCorner in cornersLeft:
 	  distFromCorner = manhattanDistance(state[0],remainingCorner)
@@ -496,8 +495,58 @@ def foodHeuristic(state, problem):
   """
   position, foodGrid = state
   "*** YOUR CODE HERE ***"
-  return 0
+  def manhattanDistance(pos1,pos2):
+    dist = abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
+    return dist
+
+  walls = problem.walls
+  foodList = foodGrid.asList()
+  mDistances = []
+  for food in foodList:
+	  distFromFood = manhattanDistance(state[0],food)
+	  #mDistances.append(distFromFood)
+	  xRange = range(state[0][0],food[0])
+	  yRange = range(state[0][1],food[1])
+	  firstPath = []
+	  if(xRange != []):
+	  	for i in yRange:
+		  	firstPath.append((xRange[0],i))
+	  if(yRange != []):
+	  	for i in xRange:
+		  	firstPath.append((i,yRange[-1]))
+	  firstPathScore = distFromFood
+	  wallPenalty = 0
+	  for pos in firstPath:
+	  	if walls[pos[0]][pos[1]]:
+			#firstPathScore += 1
+			wallPenalty = 1
+	  firstPathScore += wallPenalty
+	  secondPath = []
+	  if(yRange != []):
+	  	for i in xRange:
+	  	  	secondPath.append((i,yRange[0]))
+	  if(xRange != []):
+	  	for i in yRange:
+		  	secondPath.append((xRange[-1],i))
+	  secondPathScore = distFromFood
+	  wallPenalty = 0
+	  for pos in secondPath:
+	  	if walls[pos[0]][pos[1]]:
+			#secondPathScore += 1
+			wallPenalty = 1
+	  secondPathScore += wallPenalty
+	  bestScore = min(firstPathScore,secondPathScore)
+	  mDistances.append(bestScore)
   
+  minDist = min(mDistances)
+  
+  st = problem.getStartState()
+  food_ct_pls_1 = st[1].count() + 1
+  bonus = food_ct_pls_1 - state[1].count() 
+  score = minDist / (bonus if bonus > 1 else 1)
+
+  return score
+
 class ClosestDotSearchAgent(SearchAgent):
   "Search for all food using a sequence of searches"
   def registerInitialState(self, state):

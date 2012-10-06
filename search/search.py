@@ -182,7 +182,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
   PriorityQueue.push(frontier,node,0 + heuristic(node[0],problem))
   explored_states = set([])
 
-  if problem.isGoalState(node):
+  if problem.isGoalState(node[0]):
       return node[1]
   elif PriorityQueue.isEmpty(frontier):
       return None
