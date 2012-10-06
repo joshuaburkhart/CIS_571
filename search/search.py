@@ -123,8 +123,6 @@ def breadthFirstSearch(problem):
       node = frontier.pop(0)
       explored_states.add(node[0])
       successor_candidates = problem.getSuccessors(node[0])
-      print "current_node: ",node
-      print "successor_candidates: ",successor_candidates
       for candidate in successor_candidates:
           path_to_node = list(node[1])
 	  path_to_node.append(candidate[1])
@@ -133,13 +131,10 @@ def breadthFirstSearch(problem):
 	  frontier_nodes = set([])
 	  for nd in frontier:
               frontier_nodes.add(st(nd))
-	  print "frontier_nodes: ",frontier_nodes
           if (candidate[0] not in frontier_nodes) and (candidate[0] not in explored_states):
 	      if problem.isGoalState(child_node[0]):
 	          return child_node[1]
 	      frontier.append(child_node)
-      print "frontier: ",frontier
-      print "node: ",node
      
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "

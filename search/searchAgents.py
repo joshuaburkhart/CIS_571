@@ -277,36 +277,16 @@ class CornersProblem(search.SearchProblem):
     self._expanded = 0 # Number of search nodes expanded
     
     "*** YOUR CODE HERE ***"
-    #self.cornerList = [0,0,0,0]
 
   def getStartState(self):
     "Returns the start state (in your state space, not the full Pacman state space)"
     "*** YOUR CODE HERE ***"
-    #return (self.startingPosition,0)
     return (self.startingPosition,tuple())
 
   def isGoalState(self, state):
     "Returns whether this search state is a goal state of the problem"
     "*** YOUR CODE HERE ***"
-    """
-    cur_x,cur_y = state[0]
-    cornerCount = state[1]
-    if((cur_x,cur_y) == self.corners[0] and self.cornerList[0] != 1):
-        cornerCount += 1
-        self.cornerList[0] = 1
-    if((cur_x,cur_y) == self.corners[1] and self.cornerList[1] != 1):
-        cornerCount += 1
-	self.cornerList[1] = 1
-    if((cur_x,cur_y) == self.corners[2] and self.cornerList[2] != 1):
-        cornerCount += 1
-	self.cornerList[2] = 1
-    if((cur_x,cur_y) == self.corners[3] and self.cornerList[3] != 1):
-        cornerCount += 1
-	self.cornerList[3] = 1
-    if(cornerCount == 4):
-	    return True
-    return False
-    """
+
     if(set(state[1]) == set([1,2,3,4])):
 	    return True
     return False
@@ -325,35 +305,22 @@ class CornersProblem(search.SearchProblem):
     
     successors = []
     for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-      # Add a successor state to the successor list if the action is legal
-      # Here's a code snippet for figuring out whether a new position hits a wall:
-      #   x,y = currentPosition
-      #   dx, dy = Actions.directionToVector(action)
-      #   nextx, nexty = int(x + dx), int(y + dy)
-      #   hitsWall = self.walls[nextx][nexty]
-      
       x,y = state[0]
       dx,dy = Actions.directionToVector(action)
       nextx,nexty = int(x + dx), int(y + dy)
       if not self.walls[nextx][nexty]:
-	      #cornerCount = state[1]
 	      cornerSet = set(state[1])
-	      if((nextx,nexty) == self.corners[0]):# and self.cornerList[0] != 1):
-		      #cornerCount += 1
+	      if((nextx,nexty) == self.corners[0]):
 	      	      cornerSet.add(1)
-	      if((nextx,nexty) == self.corners[1]):# and self.cornerList[1] != 1):
-		      #cornerCount += 1
+	      if((nextx,nexty) == self.corners[1]):
 		      cornerSet.add(2)
-	      if((nextx,nexty) == self.corners[2]):# and self.cornerList[2] != 1):
-		      #cornerCount += 1
+	      if((nextx,nexty) == self.corners[2]):
 		      cornerSet.add(3)
-	      if((nextx,nexty) == self.corners[3]):# and self.cornerList[3] != 1):
-		      #cornerCount += 1
+	      if((nextx,nexty) == self.corners[3]):
 		      cornerSet.add(4)
       	      cost = 1
-	      nextState = ((nextx,nexty),tuple(cornerSet))#cornerCount)
+	      nextState = ((nextx,nexty),tuple(cornerSet))
 	      successors.append((nextState,action,cost))
-	      print "successors: ", successors
 
     self._expanded += 1
     return successors
@@ -390,7 +357,55 @@ def cornersHeuristic(state, problem):
   walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
   
   "*** YOUR CODE HERE ***"
-  return 0 # Default to trivial solution
+  
+  def manhattanDistance(pos1,pos2):
+	  dist = abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
+	  return dist
+
+  cornersLeft = list(corners)
+  for cornerIndex in list(state[1]):
+	  cornersLeft.remove(corners[cornerIndex - 1])
+
+  print "cornersLeft: ",cornersLeft
+  mDistances = []
+  for remainingCorner in cornersLeft:
+	  distFromCorner = manhattanDistance(state[0],remainingCorner)
+	  #mDistances.append(distFromCorner)
+	  xRange = range(state[0][0],remainingCorner[0])
+	  yRange = range(state[0][1],remainingCorner[1])
+	  firstPath = []
+	  if(xRange != []):
+	  	for i in yRange:
+		  	firstPath.append((xRange[0],i))
+	  if(yRange != []):
+	  	for i in xRange:
+		  	firstPath.append((i,yRange[-1]))
+	  firstPathScore = distFromCorner
+	  for pos in firstPath:
+	  	if walls[pos[0]][pos[1]]:
+			firstPathScore += 1
+	  secondPath = []
+	  if(yRange != []):
+	  	for i in xRange:
+	  	  	secondPath.append((i,yRange[0]))
+	  if(xRange != []):
+	  	for i in yRange:
+		  	secondPath.append((xRange[-1],i))
+	  secondPathScore = distFromCorner
+	  for pos in secondPath:
+	  	if walls[pos[0]][pos[1]]:
+			secondPathScore += 1
+	  bestScore = min(firstPathScore,secondPathScore)
+	  mDistances.append(bestScore)
+  
+  minDist = min(mDistances)
+
+  bonus = ((len(state[1]) / 2) + 0.88)
+  score = minDist / (bonus if bonus > 1 else 1)
+
+  return int(score)
+
+  #return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
   "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
