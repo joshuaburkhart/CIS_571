@@ -369,7 +369,6 @@ def cornersHeuristic(state, problem):
   mDistances = []
   for remainingCorner in cornersLeft:
 	  distFromCorner = manhattanDistance(state[0],remainingCorner)
-	  #mDistances.append(distFromCorner)
 	  xRange = range(state[0][0],remainingCorner[0])
 	  yRange = range(state[0][1],remainingCorner[1])
 	  firstPath = []
@@ -380,9 +379,12 @@ def cornersHeuristic(state, problem):
 	  	for i in xRange:
 		  	firstPath.append((i,yRange[-1]))
 	  firstPathScore = distFromCorner
+	  wallPenalty = 0
 	  for pos in firstPath:
 	  	if walls[pos[0]][pos[1]]:
-			firstPathScore += 1
+			wallPenalty += 0.5#1
+	  firstPathScore = (distFromCorner + wallPenalty) / (3/2)
+
 	  secondPath = []
 	  if(yRange != []):
 	  	for i in xRange:
@@ -391,20 +393,16 @@ def cornersHeuristic(state, problem):
 	  	for i in yRange:
 		  	secondPath.append((xRange[-1],i))
 	  secondPathScore = distFromCorner
+	  wallPenalty = 0
 	  for pos in secondPath:
 	  	if walls[pos[0]][pos[1]]:
-			secondPathScore += 1
+			wallPenalty += 0.5#1
+          secondPathScore = (distFromCorner + wallPenalty) / (3/2)
+
 	  bestScore = min(firstPathScore,secondPathScore)
 	  mDistances.append(bestScore)
-  
-  minDist = min(mDistances)
 
-  bonus = ((len(state[1]) / 2) + 0.88)
-  score = minDist / (bonus if bonus > 1 else 1)
-
-  return int(score)
-
-  #return 0 # Default to trivial solution
+  return sum(mDistances)
 
 class AStarCornersAgent(SearchAgent):
   "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -504,7 +502,6 @@ def foodHeuristic(state, problem):
   mDistances = []
   for food in foodList:
 	  distFromFood = manhattanDistance(state[0],food)
-	  #mDistances.append(distFromFood)
 	  xRange = range(state[0][0],food[0])
 	  yRange = range(state[0][1],food[1])
 	  firstPath = []
@@ -518,7 +515,6 @@ def foodHeuristic(state, problem):
 	  wallPenalty = 0
 	  for pos in firstPath:
 	  	if walls[pos[0]][pos[1]]:
-			#firstPathScore += 1
 			wallPenalty = 1
 	  firstPathScore += wallPenalty
 	  secondPath = []
@@ -532,18 +528,19 @@ def foodHeuristic(state, problem):
 	  wallPenalty = 0
 	  for pos in secondPath:
 	  	if walls[pos[0]][pos[1]]:
-			#secondPathScore += 1
 			wallPenalty = 1
 	  secondPathScore += wallPenalty
 	  bestScore = min(firstPathScore,secondPathScore)
 	  mDistances.append(bestScore)
   
   minDist = min(mDistances)
-  
+ 
+  print "foodList: ",foodList
+
   st = problem.getStartState()
   food_ct_pls_1 = st[1].count() + 1
-  bonus = food_ct_pls_1 - state[1].count() 
-  score = minDist / (bonus if bonus > 1 else 1)
+  bonus = food_ct_pls_1 - state[1].count()
+  score = minDist# / (bonus if bonus > 1 else 1)
 
   return score
 

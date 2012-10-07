@@ -118,7 +118,6 @@ def breadthFirstSearch(problem):
   frontier.insert(0,node)
   while True:
       if not frontier:
-          print "THIS IS NOT SUPPOSED TO HAPPEN !!!!!!!!!!!"
           return None
       node = frontier.pop(0)
       explored_states.add(node[0])
@@ -144,7 +143,7 @@ def uniformCostSearch(problem):
 
   frontier = PriorityQueue()
   explored_states = set([])
-  node = (problem.getStartState(),[],1)
+  node = (problem.getStartState(),[],0)
 
   if problem.isGoalState(node[0]):
       return node[1]
@@ -152,17 +151,19 @@ def uniformCostSearch(problem):
   while True:
       if not frontier:
           return None
+      node = PriorityQueue.pop(frontier)
       explored_states.add(node[0])
       successor_candidates = problem.getSuccessors(node[0])
+      successor_candidates.reverse()
       for candidate in successor_candidates:
-          path_to_node = list(node[1])
-	  path_to_node.append(candidate[1])
-	  child_node = (candidate[0],path_to_node,candidate[2])
-          if candidate[0] not in explored_states:
+	  if candidate[0] not in explored_states:
+	      path_to_node = list(node[1])
+	      path_to_node.append(candidate[1])
+	      child_node = (candidate[0],path_to_node,node[2] + candidate[2])
+	      #if candidate[0] not in explored_states:
 	      if problem.isGoalState(child_node[0]):
 	          return child_node[1]
 	      PriorityQueue.push(frontier,child_node,child_node[2])
-      node = PriorityQueue.pop(frontier)
 
 def nullHeuristic(state, problem=None):
   """
@@ -178,8 +179,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
   from util import PriorityQueue 
   
   frontier = PriorityQueue()
-  node = (problem.getStartState(),[])
-  PriorityQueue.push(frontier,node,0 + heuristic(node[0],problem))
+  node = (problem.getStartState(),[],0)
+  PriorityQueue.push(frontier,node,node[2] + heuristic(node[0],problem))
   explored_states = set([])
 
   if problem.isGoalState(node[0]):
@@ -191,15 +192,18 @@ def aStarSearch(problem, heuristic=nullHeuristic):
           new_node = PriorityQueue.pop(frontier)
           explored_states.add(new_node[0])
 	  successor_candidates = problem.getSuccessors(new_node[0])
+          if node[0][0] == (13,5):
+	      print "successors: ",successor_candidates
           if successor_candidates:
 	      successor_candidates.reverse()
               for candidate in successor_candidates:
-	          c_path = list(new_node[1])
-	          c_path.append(candidate[1])
-                  if candidate[0] not in explored_states:
+		  if candidate[0] not in explored_states:
+		      c_path = list(new_node[1])
+	              c_path.append(candidate[1])
+		      #if candidate[0] not in explored_states:
 	              if problem.isGoalState(candidate[0]):
 		          return c_path
-	              PriorityQueue.push(frontier,(candidate[0],c_path),candidate[2] + heuristic(candidate[0],problem))
+	              PriorityQueue.push(frontier,(candidate[0],c_path,new_node[2] + candidate[2]),new_node[2] + heuristic(candidate[0],problem))
 
 # Abbreviations
 bfs = breadthFirstSearch
