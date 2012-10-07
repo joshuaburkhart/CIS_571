@@ -402,7 +402,12 @@ def cornersHeuristic(state, problem):
 	  bestScore = min(firstPathScore,secondPathScore)
 	  mDistances.append(bestScore)
 
-  return sum(mDistances)
+  cornerDistances = [0]
+  for node in cornersLeft:
+	  for node2 in cornersLeft:
+            dist = manhattanDistance(node,node2)
+	    cornerDistances.append(dist)
+  return min(mDistances) + max(cornerDistances)
 
 class AStarCornersAgent(SearchAgent):
   "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -515,8 +520,8 @@ def foodHeuristic(state, problem):
 	  wallPenalty = 0
 	  for pos in firstPath:
 	  	if walls[pos[0]][pos[1]]:
-			wallPenalty = 1
-	  firstPathScore += wallPenalty
+			wallPenalty += 0.5
+	  firstPathScore = (distFromFood + wallPenalty) / (3/2)
 	  secondPath = []
 	  if(yRange != []):
 	  	for i in xRange:
@@ -528,21 +533,17 @@ def foodHeuristic(state, problem):
 	  wallPenalty = 0
 	  for pos in secondPath:
 	  	if walls[pos[0]][pos[1]]:
-			wallPenalty = 1
-	  secondPathScore += wallPenalty
+			wallPenalty += 0.5
+	  secondPathScore = (distFromFood + wallPenalty) / (3/2)
 	  bestScore = min(firstPathScore,secondPathScore)
 	  mDistances.append(bestScore)
   
-  minDist = min(mDistances)
- 
-  print "foodList: ",foodList
-
-  st = problem.getStartState()
-  food_ct_pls_1 = st[1].count() + 1
-  bonus = food_ct_pls_1 - state[1].count()
-  score = minDist# / (bonus if bonus > 1 else 1)
-
-  return score
+  foodDistances = [0]
+  for node in foodList:
+	  for node2 in foodList:
+            dist = manhattanDistance(node,node2)
+	    foodDistances.append(dist)
+  return min(mDistances) + max(foodDistances) 
 
 class ClosestDotSearchAgent(SearchAgent):
   "Search for all food using a sequence of searches"
@@ -569,8 +570,9 @@ class ClosestDotSearchAgent(SearchAgent):
     walls = gameState.getWalls()
     problem = AnyFoodSearchProblem(gameState)
 
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from search import breadthFirstSearch
+
+    return breadthFirstSearch(problem)
   
 class AnyFoodSearchProblem(PositionSearchProblem):
   """
@@ -597,7 +599,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
     self.startState = gameState.getPacmanPosition()
     self.costFn = lambda x: 1
     self._visited, self._visitedlist, self._expanded = {}, [], 0
-    
+
   def isGoalState(self, state):
     """
     The state is Pacman's position. Fill this in with a goal test
@@ -606,7 +608,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
     x,y = state
     
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    return ((x,y) in self.food.asList())
 
 ##################
 # Mini-contest 1 #

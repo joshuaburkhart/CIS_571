@@ -93,6 +93,7 @@ def depthFirstSearch(problem):
   while True:
       if not frontier:
           return None
+      node = frontier.pop(0)       
       explored_states.add(node[0])
       successor_candidates = problem.getSuccessors(node[0])
       for candidate in successor_candidates:
@@ -103,7 +104,6 @@ def depthFirstSearch(problem):
 	      if problem.isGoalState(child_node[0]):
 	          return child_node[1]
 	      frontier.insert(0,child_node)
-      node = frontier.pop(0)       
       
 def breadthFirstSearch(problem):
   "Search the shallowest nodes in the search tree first. [p 81]"
@@ -177,7 +177,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
   "*** YOUR CODE HERE ***"
 
   from util import PriorityQueue 
-  
+ 
   frontier = PriorityQueue()
   node = (problem.getStartState(),[],0)
   PriorityQueue.push(frontier,node,node[2] + heuristic(node[0],problem))
