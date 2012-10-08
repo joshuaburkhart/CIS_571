@@ -402,12 +402,23 @@ def cornersHeuristic(state, problem):
 	  bestScore = min(firstPathScore,secondPathScore)
 	  mDistances.append(bestScore)
 
-  cornerDistances = [0]
+  cornerDistances = []
+  cornersToTouch = list(cornersLeft)
   for node in cornersLeft:
-	  for node2 in cornersLeft:
-            dist = manhattanDistance(node,node2)
-	    cornerDistances.append(dist)
-  return min(mDistances) + max(cornerDistances)
+      if cornersToTouch:
+          cornersToTouch.remove(node)
+          for node2 in cornersToTouch:
+              dist = manhattanDistance(node,node2)
+	      cornerDistances.append(dist)
+  smallestCornerPath = 0
+  numberOfSegments = range(1,len(cornersLeft))
+  print "range: ",numberOfSegments
+  for seg in numberOfSegments:
+      if cornerDistances:
+          smallestCornerArc = min(cornerDistances)
+          smallestCornerPath += smallestCornerArc
+          cornerDistances.remove(smallestCornerArc)
+  return smallestCornerPath + min(mDistances)
 
 class AStarCornersAgent(SearchAgent):
   "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
