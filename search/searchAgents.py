@@ -412,7 +412,6 @@ def cornersHeuristic(state, problem):
 	      cornerDistances.append(dist)
   smallestCornerPath = 0
   numberOfSegments = range(1,len(cornersLeft))
-  print "range: ",numberOfSegments
   for seg in numberOfSegments:
       if cornerDistances:
           smallestCornerArc = min(cornerDistances)
@@ -514,9 +513,9 @@ def foodHeuristic(state, problem):
     return dist
 
   walls = problem.walls
-  foodList = foodGrid.asList()
+  foodLeft = foodGrid.asList()
   mDistances = []
-  for food in foodList:
+  for food in foodLeft:
 	  distFromFood = manhattanDistance(state[0],food)
 	  xRange = range(state[0][0],food[0])
 	  yRange = range(state[0][1],food[1])
@@ -549,12 +548,22 @@ def foodHeuristic(state, problem):
 	  bestScore = min(firstPathScore,secondPathScore)
 	  mDistances.append(bestScore)
   
-  foodDistances = [0]
-  for node in foodList:
-	  for node2 in foodList:
-            dist = manhattanDistance(node,node2)
-	    foodDistances.append(dist)
-  return min(mDistances) + max(foodDistances) 
+  foodDistances = []
+  foodToTouch = list(foodLeft)
+  for node in foodLeft:
+      if foodToTouch:
+          foodToTouch.remove(node)
+          for node2 in foodToTouch:
+              dist = manhattanDistance(node,node2)
+              foodDistances.append(dist)
+  smallestCornerPath = 0 
+  numberOfSegments = range(1,len(foodLeft))
+  for seg in numberOfSegments:
+      if foodDistances:
+           smallestCornerArc = min(foodDistances)
+           smallestCornerPath += smallestCornerArc
+           foodDistances.remove(smallestCornerArc)
+  return smallestCornerPath + min(mDistances)
 
 class ClosestDotSearchAgent(SearchAgent):
   "Search for all food using a sequence of searches"
