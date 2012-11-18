@@ -37,9 +37,6 @@ class ValueIterationAgent(ValueEstimationAgent):
     self.iterations = iterations
     self.values = util.Counter() # A Counter is a dict with default 0
      
-    "*** YOUR CODE HERE ***"
-
-
     for i in range(iterations):
         iter_vals = self.values.copy()
         for s in self.mdp.getStates():
@@ -68,7 +65,6 @@ class ValueIterationAgent(ValueEstimationAgent):
       necessarily create this quantity and you may have
       to derive it on the fly.
     """
-    "*** YOUR CODE HERE ***"
     q = self.values[state]
     for s_prime,p in self.mdp.getTransitionStatesAndProbs(state,action):
         q += p * self.discount * self.values[s_prime]
@@ -82,7 +78,6 @@ class ValueIterationAgent(ValueEstimationAgent):
       there are no legal actions, which is the case at the
       terminal state, you should return None.
     """
-    "*** YOUR CODE HERE ***"
     a_sums = Counter()
     for a in self.mdp.getPossibleActions(state):
         for s_prime,p in self.mdp.getTransitionStatesAndProbs(state,a):
