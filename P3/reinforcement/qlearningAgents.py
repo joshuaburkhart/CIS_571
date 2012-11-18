@@ -82,7 +82,6 @@ class QLearningAgent(ReinforcementAgent):
       HINT: You might want to use util.flipCoin(prob)
       HINT: To pick randomly from a list, use random.choice(list)
     """
-    # Pick Action
     legalActions = self.getLegalActions(state)
     if util.flipCoin(1 - self.epsilon):
         return self.getPolicy(state)
@@ -144,24 +143,28 @@ class ApproximateQAgent(PacmanQAgent):
   def __init__(self, extractor='IdentityExtractor', **args):
     self.featExtractor = util.lookup(extractor, globals())()
     PacmanQAgent.__init__(self, **args)
-
-    # You might want to initialize weights here.
-    "*** YOUR CODE HERE ***"
+    self.weights = Counter()
 
   def getQValue(self, state, action):
     """
       Should return Q(state,action) = w * featureVector
       where * is the dotProduct operator
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    features = self.featExtractor.getFeatures(state,action)
+    q = 0
+    for i in features:
+        q += self.weights[i] * features[i]
+    return q
 
   def update(self, state, action, nextState, reward):
     """
        Should update your weights based on transition
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    sample = (reward + (self.discount * self.getValue(nextState)))
+    difference = sample - self.getQValue(state,action)
+    features = self.featExtractor.getFeatures(state,action)
+    for i in features:
+        self.weights[i] += self.alpha * difference * features[i]
 
   def final(self, state):
     "Called at the end of each game."
