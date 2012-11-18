@@ -54,10 +54,15 @@ class QLearningAgent(ReinforcementAgent):
       there are no legal actions, which is the case at the
       terminal state, you should return a value of 0.0.
     """
-    vals = []
+    q = 0
+    unset = True
     for a in self.getLegalActions(state):
-        vals.append(self.getQValue(state,a))
-    return 0 if len(vals) == 0 else max(vals)
+        if unset == True:
+            q = self.getQValue(state,a)
+            unset = False
+        if self.getQValue(state,a) > q:
+            q = self.getQValue(state,a)
+    return q
 
   def getPolicy(self, state):
     """
@@ -65,11 +70,14 @@ class QLearningAgent(ReinforcementAgent):
       are no legal actions, which is the case at the terminal state,
       you should return None.
     """
-    tied_a_vals = []
+    p = None
     for a in self.getLegalActions(state):
         if self.getQValue(state,a) == self.getValue(state):
-            tied_a_vals.append(a)
-    return None if len(tied_a_vals) == 0 else random.choice(tied_a_vals)
+            if p == None:
+                p = a
+            else:
+                p = random.choice([p,a])
+    return p
 
   def getAction(self, state):
     """
