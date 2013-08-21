@@ -103,8 +103,8 @@ class SearchAgent(Agent):
     """
     if self.searchFunction == None: raise Exception, "No search function provided for SearchAgent"
     starttime = time.time()
-    problem = self.searchType(state) # Makes a new search problem
-    self.actions  = self.searchFunction(problem) # Find a path
+    problem = self.searchType(state)  # Makes a new search problem
+    self.actions = self.searchFunction(problem)  # Find a path
     totalCost = problem.getCostOfActions(self.actions)
     print('Path found with total cost of %d in %.1f seconds' % (totalCost, time.time() - starttime))
     if '_expanded' in dir(problem): print('Search nodes expanded: %d' % problem._expanded)
@@ -135,7 +135,7 @@ class PositionSearchProblem(search.SearchProblem):
   Note: this search problem is fully specified; you should NOT change it.
   """
   
-  def __init__(self, gameState, costFn = lambda x: 1, goal=(1,1), start=None, warn=True):
+  def __init__(self, gameState, costFn=lambda x: 1, goal=(1, 1), start=None, warn=True):
     """
     Stores the start and goal.  
     
@@ -165,8 +165,8 @@ class PositionSearchProblem(search.SearchProblem):
        self._visitedlist.append(state)
        import __main__
        if '_display' in dir(__main__):
-         if 'drawExpandedCells' in dir(__main__._display): #@UndefinedVariable
-           __main__._display.drawExpandedCells(self._visitedlist) #@UndefinedVariable
+         if 'drawExpandedCells' in dir(__main__._display):  # @UndefinedVariable
+           __main__._display.drawExpandedCells(self._visitedlist)  # @UndefinedVariable
        
      return isGoal   
    
@@ -184,13 +184,13 @@ class PositionSearchProblem(search.SearchProblem):
     
     successors = []
     for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-      x,y = state
+      x, y = state
       dx, dy = Actions.directionToVector(action)
       nextx, nexty = int(x + dx), int(y + dy)
       if not self.walls[nextx][nexty]:
         nextState = (nextx, nexty)
         cost = self.costFn(nextState)
-        successors.append( ( nextState, action, cost) )
+        successors.append((nextState, action, cost))
         
     # Bookkeeping for display purposes
     self._expanded += 1 
@@ -206,14 +206,14 @@ class PositionSearchProblem(search.SearchProblem):
     include an illegal move, return 999999
     """
     if actions == None: return 999999
-    x,y= self.getStartState()
+    x, y = self.getStartState()
     cost = 0
     for action in actions:
       # Check figure out the next state and see whether its' legal
       dx, dy = Actions.directionToVector(action)
       x, y = int(x + dx), int(y + dy)
       if self.walls[x][y]: return 999999
-      cost += self.costFn((x,y))
+      cost += self.costFn((x, y))
     return cost
 
 class StayEastSearchAgent(SearchAgent):
@@ -250,7 +250,7 @@ def euclideanHeuristic(position, problem, info={}):
   "The Euclidean distance heuristic for a PositionSearchProblem"
   xy1 = position
   xy2 = problem.goal
-  return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
+  return ((xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2) ** 0.5
 
 #####################################################
 # This portion is incomplete.  Time to write code!  #
@@ -269,25 +269,25 @@ class CornersProblem(search.SearchProblem):
     """
     self.walls = startingGameState.getWalls()
     self.startingPosition = startingGameState.getPacmanPosition()
-    top, right = self.walls.height-2, self.walls.width-2 
-    self.corners = ((1,1), (1,top), (right, 1), (right, top))
+    top, right = self.walls.height - 2, self.walls.width - 2 
+    self.corners = ((1, 1), (1, top), (right, 1), (right, top))
     for corner in self.corners:
       if not startingGameState.hasFood(*corner):
         print 'Warning: no food in corner ' + str(corner)
-    self._expanded = 0 # Number of search nodes expanded
+    self._expanded = 0  # Number of search nodes expanded
     
     "*** YOUR CODE HERE ***"
 
   def getStartState(self):
     "Returns the start state (in your state space, not the full Pacman state space)"
     "*** YOUR CODE HERE ***"
-    return (self.startingPosition,tuple())
+    return (self.startingPosition, tuple())
 
   def isGoalState(self, state):
     "Returns whether this search state is a goal state of the problem"
     "*** YOUR CODE HERE ***"
 
-    if(set(state[1]) == set([1,2,3,4])):
+    if(set(state[1]) == set([1, 2, 3, 4])):
 	    return True
     return False
 
@@ -305,22 +305,22 @@ class CornersProblem(search.SearchProblem):
     
     successors = []
     for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-      x,y = state[0]
-      dx,dy = Actions.directionToVector(action)
-      nextx,nexty = int(x + dx), int(y + dy)
+      x, y = state[0]
+      dx, dy = Actions.directionToVector(action)
+      nextx, nexty = int(x + dx), int(y + dy)
       if not self.walls[nextx][nexty]:
 	      cornerSet = set(state[1])
-	      if((nextx,nexty) == self.corners[0]):
+	      if((nextx, nexty) == self.corners[0]):
 	      	      cornerSet.add(1)
-	      if((nextx,nexty) == self.corners[1]):
+	      if((nextx, nexty) == self.corners[1]):
 		      cornerSet.add(2)
-	      if((nextx,nexty) == self.corners[2]):
+	      if((nextx, nexty) == self.corners[2]):
 		      cornerSet.add(3)
-	      if((nextx,nexty) == self.corners[3]):
+	      if((nextx, nexty) == self.corners[3]):
 		      cornerSet.add(4)
       	      cost = 1
-	      nextState = ((nextx,nexty),tuple(cornerSet))
-	      successors.append((nextState,action,cost))
+	      nextState = ((nextx, nexty), tuple(cornerSet))
+	      successors.append((nextState, action, cost))
 
     self._expanded += 1
     return successors
@@ -331,7 +331,7 @@ class CornersProblem(search.SearchProblem):
     include an illegal move, return 999999.  This is implemented for you.
     """
     if actions == None: return 999999
-    x,y= self.startingPosition
+    x, y = self.startingPosition
     for action in actions:
       dx, dy = Actions.directionToVector(action)
       x, y = int(x + dx), int(y + dy)
@@ -353,12 +353,12 @@ def cornersHeuristic(state, problem):
   it should be admissible.  (You need not worry about consistency for
   this heuristic to receive full credit.)
   """
-  corners = problem.corners # These are the corner coordinates
-  walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+  corners = problem.corners  # These are the corner coordinates
+  walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
   
   "*** YOUR CODE HERE ***"
   
-  def manhattanDistance(pos1,pos2):
+  def manhattanDistance(pos1, pos2):
 	  dist = abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
 	  return dist
 
@@ -368,38 +368,38 @@ def cornersHeuristic(state, problem):
 
   mDistances = []
   for remainingCorner in cornersLeft:
-	  distFromCorner = manhattanDistance(state[0],remainingCorner)
-	  xRange = range(state[0][0],remainingCorner[0])
-	  yRange = range(state[0][1],remainingCorner[1])
+	  distFromCorner = manhattanDistance(state[0], remainingCorner)
+	  xRange = range(state[0][0], remainingCorner[0])
+	  yRange = range(state[0][1], remainingCorner[1])
 	  firstPath = []
 	  if(xRange != []):
 	  	for i in yRange:
-		  	firstPath.append((xRange[0],i))
+		  	firstPath.append((xRange[0], i))
 	  if(yRange != []):
 	  	for i in xRange:
-		  	firstPath.append((i,yRange[-1]))
+		  	firstPath.append((i, yRange[-1]))
 	  firstPathScore = distFromCorner
 	  wallPenalty = 0
 	  for pos in firstPath:
 	  	if walls[pos[0]][pos[1]]:
-			wallPenalty += 0.5#1
-	  firstPathScore = (distFromCorner + wallPenalty) / (3/2)
+			wallPenalty += 0.5  # 1
+	  firstPathScore = (distFromCorner + wallPenalty) / (3 / 2)
 
 	  secondPath = []
 	  if(yRange != []):
 	  	for i in xRange:
-	  	  	secondPath.append((i,yRange[0]))
+	  	  	secondPath.append((i, yRange[0]))
 	  if(xRange != []):
 	  	for i in yRange:
-		  	secondPath.append((xRange[-1],i))
+		  	secondPath.append((xRange[-1], i))
 	  secondPathScore = distFromCorner
 	  wallPenalty = 0
 	  for pos in secondPath:
 	  	if walls[pos[0]][pos[1]]:
-			wallPenalty += 0.5#1
-          secondPathScore = (distFromCorner + wallPenalty) / (3/2)
+			wallPenalty += 0.5  # 1
+          secondPathScore = (distFromCorner + wallPenalty) / (3 / 2)
 
-	  bestScore = min(firstPathScore,secondPathScore)
+	  bestScore = min(firstPathScore, secondPathScore)
 	  mDistances.append(bestScore)
 
   cornerDistances = []
@@ -408,16 +408,16 @@ def cornersHeuristic(state, problem):
       if cornersToTouch:
           cornersToTouch.remove(node)
           for node2 in cornersToTouch:
-              dist = manhattanDistance(node,node2)
+              dist = manhattanDistance(node, node2)
 	      cornerDistances.append(dist)
   smallestCornerPath = 0
-  numberOfSegments = range(1,len(cornersLeft))
+  numberOfSegments = range(1, len(cornersLeft))
   for seg in numberOfSegments:
       if cornerDistances:
           smallestCornerArc = min(cornerDistances)
           smallestCornerPath += smallestCornerArc
           cornerDistances.remove(smallestCornerArc)
-  return smallestCornerPath + min(mDistances)
+  return smallestCornerPath + (min(mDistances) if len(mDistances) > 0 else 0)
 
 class AStarCornersAgent(SearchAgent):
   "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -439,7 +439,7 @@ class FoodSearchProblem:
     self.walls = startingGameState.getWalls()
     self.startingGameState = startingGameState
     self._expanded = 0
-    self.heuristicInfo = {} # A dictionary for the heuristic to store information
+    self.heuristicInfo = {}  # A dictionary for the heuristic to store information
       
   def getStartState(self):
     return self.start
@@ -452,19 +452,19 @@ class FoodSearchProblem:
     successors = []
     self._expanded += 1
     for direction in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-      x,y = state[0]
+      x, y = state[0]
       dx, dy = Actions.directionToVector(direction)
       nextx, nexty = int(x + dx), int(y + dy)
       if not self.walls[nextx][nexty]:
         nextFood = state[1].copy()
         nextFood[nextx][nexty] = False
-        successors.append( ( ((nextx, nexty), nextFood), direction, 1) )
+        successors.append((((nextx, nexty), nextFood), direction, 1))
     return successors
 
   def getCostOfActions(self, actions):
     """Returns the cost of a particular sequence of actions.  If those actions
     include an illegal move, return 999999"""
-    x,y= self.getStartState()[0]
+    x, y = self.getStartState()[0]
     cost = 0
     for action in actions:
       # figure out the next state and see whether it's legal
@@ -508,7 +508,7 @@ def foodHeuristic(state, problem):
   """
   position, foodGrid = state
   "*** YOUR CODE HERE ***"
-  def manhattanDistance(pos1,pos2):
+  def manhattanDistance(pos1, pos2):
     dist = abs(pos1[0] - pos2[0]) + abs(pos1[1] - pos2[1])
     return dist
 
@@ -516,36 +516,36 @@ def foodHeuristic(state, problem):
   foodLeft = foodGrid.asList()
   mDistances = []
   for food in foodLeft:
-	  distFromFood = manhattanDistance(state[0],food)
-	  xRange = range(state[0][0],food[0])
-	  yRange = range(state[0][1],food[1])
+	  distFromFood = manhattanDistance(state[0], food)
+	  xRange = range(state[0][0], food[0])
+	  yRange = range(state[0][1], food[1])
 	  firstPath = []
 	  if(xRange != []):
 	  	for i in yRange:
-		  	firstPath.append((xRange[0],i))
+		  	firstPath.append((xRange[0], i))
 	  if(yRange != []):
 	  	for i in xRange:
-		  	firstPath.append((i,yRange[-1]))
+		  	firstPath.append((i, yRange[-1]))
 	  firstPathScore = distFromFood
 	  wallPenalty = 0
 	  for pos in firstPath:
 	  	if walls[pos[0]][pos[1]]:
-			wallPenalty += 0.5
-	  firstPathScore = (distFromFood + wallPenalty) / (3/2)
+			wallPenalty += 4
+	  firstPathScore = (distFromFood + wallPenalty) / 5
 	  secondPath = []
 	  if(yRange != []):
 	  	for i in xRange:
-	  	  	secondPath.append((i,yRange[0]))
+	  	  	secondPath.append((i, yRange[0]))
 	  if(xRange != []):
 	  	for i in yRange:
-		  	secondPath.append((xRange[-1],i))
+		  	secondPath.append((xRange[-1], i))
 	  secondPathScore = distFromFood
 	  wallPenalty = 0
 	  for pos in secondPath:
 	  	if walls[pos[0]][pos[1]]:
-			wallPenalty += 0.5
-	  secondPathScore = (distFromFood + wallPenalty) / (3/2)
-	  bestScore = min(firstPathScore,secondPathScore)
+			wallPenalty += 4
+	  secondPathScore = (distFromFood + wallPenalty) / 5
+	  bestScore = min(firstPathScore, secondPathScore)
 	  mDistances.append(bestScore)
   
   foodDistances = []
@@ -554,16 +554,17 @@ def foodHeuristic(state, problem):
       if foodToTouch:
           foodToTouch.remove(node)
           for node2 in foodToTouch:
-              dist = manhattanDistance(node,node2)
-              foodDistances.append(dist)
-  smallestCornerPath = 0 
-  numberOfSegments = range(1,len(foodLeft))
+              distFromFood = manhattanDistance(node, node2)
+              foodDistances.append(distFromFood)
+
+  smallestFoodPath = 0 
+  numberOfSegments = range(1, len(foodLeft))
   for seg in numberOfSegments:
       if foodDistances:
-           smallestCornerArc = min(foodDistances)
-           smallestCornerPath += smallestCornerArc
-           foodDistances.remove(smallestCornerArc)
-  return smallestCornerPath + min(mDistances)
+           smallestFoodArc = min(foodDistances)
+           smallestFoodPath += smallestFoodArc
+           foodDistances.remove(smallestFoodArc)
+  return smallestFoodPath + (min(mDistances) if len(mDistances) > 0 else 0)
 
 class ClosestDotSearchAgent(SearchAgent):
   "Search for all food using a sequence of searches"
@@ -571,7 +572,7 @@ class ClosestDotSearchAgent(SearchAgent):
     self.actions = []
     currentState = state
     while(currentState.getFood().count() > 0): 
-      nextPathSegment = self.findPathToClosestDot(currentState) # The missing piece
+      nextPathSegment = self.findPathToClosestDot(currentState)  # The missing piece
       self.actions += nextPathSegment
       for action in nextPathSegment: 
         legal = currentState.getLegalActions()
@@ -625,10 +626,10 @@ class AnyFoodSearchProblem(PositionSearchProblem):
     The state is Pacman's position. Fill this in with a goal test
     that will complete the problem definition.
     """
-    x,y = state
+    x, y = state
     
     "*** YOUR CODE HERE ***"
-    return ((x,y) in self.food.asList())
+    return ((x, y) in self.food.asList())
 
 ##################
 # Mini-contest 1 #

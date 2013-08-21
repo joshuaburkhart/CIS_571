@@ -15,19 +15,19 @@ class KeyboardAgent(Agent):
   An agent controlled by the keyboard.
   """
   # NOTE: Arrow keys also work.
-  WEST_KEY  = 'a' 
-  EAST_KEY  = 'd' 
+  WEST_KEY = 'a' 
+  EAST_KEY = 'd' 
   NORTH_KEY = 'w' 
   SOUTH_KEY = 's'
   STOP_KEY = 'q'
 
-  def __init__( self, index = 0 ):
+  def __init__(self, index=0):
     
     self.lastMove = Directions.STOP
     self.index = index
     self.keys = []
     
-  def getAction( self, state):
+  def getAction(self, state):
     from graphicsUtils import keys_waiting
     from graphicsUtils import keys_pressed
     keys = keys_waiting() + keys_pressed()
@@ -63,8 +63,8 @@ class KeyboardAgent2(KeyboardAgent):
   A second agent controlled by the keyboard.
   """
   # NOTE: Arrow keys also work.
-  WEST_KEY  = 'j' 
-  EAST_KEY  = "l" 
+  WEST_KEY = 'j' 
+  EAST_KEY = "l" 
   NORTH_KEY = 'i' 
   SOUTH_KEY = 'k'
   STOP_KEY = 'u'

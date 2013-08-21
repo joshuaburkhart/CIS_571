@@ -20,7 +20,7 @@ class Stack:
   def __init__(self):
     self.list = []
     
-  def push(self,item):
+  def push(self, item):
     "Push 'item' onto the stack"
     self.list.append(item)
 
@@ -37,9 +37,9 @@ class Queue:
   def __init__(self):
     self.list = []
   
-  def push(self,item):
+  def push(self, item):
     "Enqueue the 'item' into the queue"
-    self.list.insert(0,item)
+    self.list.insert(0, item)
 
   def pop(self):
     """
@@ -67,11 +67,11 @@ class PriorityQueue:
     self.heap = []
     
   def push(self, item, priority):
-      pair = (priority,item)
-      heapq.heappush(self.heap,pair)
+      pair = (priority, item)
+      heapq.heappush(self.heap, pair)
 
   def pop(self):
-      (priority,item) = heapq.heappop(self.heap)
+      (priority, item) = heapq.heappop(self.heap)
       return item
   
   def isEmpty(self):
@@ -86,17 +86,17 @@ class PriorityQueueWithFunction(PriorityQueue):
   """  
   def  __init__(self, priorityFunction):
     "priorityFunction (item) -> priority"
-    self.priorityFunction = priorityFunction      # store the priority function
-    PriorityQueue.__init__(self)        # super-class initializer
+    self.priorityFunction = priorityFunction  # store the priority function
+    PriorityQueue.__init__(self)  # super-class initializer
     
   def push(self, item):
     "Adds an item to the queue with priority from the priority function"
     PriorityQueue.push(self, item, self.priorityFunction(item))
 
     
-def manhattanDistance( xy1, xy2 ):
+def manhattanDistance(xy1, xy2):
   "Returns the Manhattan distance between points xy1 and xy2"
-  return abs( xy1[0] - xy2[0] ) + abs( xy1[1] - xy2[1] )
+  return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
 
 """
   Data structures and functions useful for various course projects
@@ -221,7 +221,7 @@ class Counter(dict):
     """
     return Counter(dict.copy(self))
   
-  def __mul__(self, y ):
+  def __mul__(self, y):
     """
     Multiplying two counters gives the dot product of their vectors where
     each unique label is a vector element.
@@ -240,7 +240,7 @@ class Counter(dict):
     sum = 0
     x = self
     if len(x) > len(y):
-      x,y = y,x
+      x, y = y, x
     for key in x:
       if key not in y:
         continue
@@ -265,7 +265,7 @@ class Counter(dict):
     for key, value in y.items():
       self[key] += value   
       
-  def __add__( self, y ):
+  def __add__(self, y):
     """
     Adding two counters gives a counter with the union of all keys and
     counts of the second added to counts of the first.
@@ -291,7 +291,7 @@ class Counter(dict):
       addend[key] = y[key]
     return addend
     
-  def __sub__( self, y ):
+  def __sub__(self, y):
     """
     Subtracting a counter from another gives a counter with the union of all keys and
     counts of the second subtracted from counts of the first.
@@ -346,7 +346,7 @@ def nSample(distribution, values, n):
   rand = [random.random() for i in range(n)]
   rand.sort()
   samples = []
-  samplePos, distPos, cdf = 0,0, distribution[0]
+  samplePos, distPos, cdf = 0, 0, distribution[0]
   while samplePos < n:
     if rand[samplePos] < cdf:
       samplePos += 1
@@ -356,7 +356,7 @@ def nSample(distribution, values, n):
       cdf += distribution[distPos]
   return samples
     
-def sample(distribution, values = None):
+def sample(distribution, values=None):
   if type(distribution) == Counter: 
     items = distribution.items()
     distribution = [i[1] for i in items] 
@@ -364,7 +364,7 @@ def sample(distribution, values = None):
   if sum(distribution) != 1:
     distribution = normalize(distribution)
   choice = random.random()
-  i, total= 0, distribution[0]
+  i, total = 0, distribution[0]
   while choice > total:
     i += 1
     total += distribution[i]
@@ -372,7 +372,7 @@ def sample(distribution, values = None):
 
 def sampleFromCounter(ctr):
   items = ctr.items()
-  return sample([v for k,v in items], [k for k,v in items])
+  return sample([v for k, v in items], [k for k, v in items])
 
 def getProbability(value, distribution, values):
   """
@@ -385,11 +385,11 @@ def getProbability(value, distribution, values):
       total += prob
   return total
 
-def flipCoin( p ):
+def flipCoin(p):
   r = random.random()
   return r < p 
 
-def chooseFromDistribution( distribution ):
+def chooseFromDistribution(distribution):
   "Takes either a counter or a list of (prob, key) pairs and samples"
   if type(distribution) == dict or type(distribution) == Counter:
     return sample(distribution)
@@ -399,21 +399,21 @@ def chooseFromDistribution( distribution ):
     base += prob
     if r <= base: return element
     
-def nearestPoint( pos ):
+def nearestPoint(pos):
   """
   Finds the nearest grid point to a position (discretizes).
   """
-  ( current_row, current_col ) = pos
+  (current_row, current_col) = pos
 
-  grid_row = int( current_row + 0.5 ) 
-  grid_col = int( current_col + 0.5 ) 
-  return ( grid_row, grid_col )     
+  grid_row = int(current_row + 0.5) 
+  grid_col = int(current_col + 0.5) 
+  return (grid_row, grid_col)     
 
-def sign( x ):
+def sign(x):
   """
   Returns 1 or -1 depending on the sign of x
   """
-  if( x >= 0 ):
+  if(x >= 0):
     return 1
   else:
     return -1
@@ -428,16 +428,16 @@ def arrayInvert(array):
       result[inner].append(outer[inner])
   return result
 
-def matrixAsList( matrix, value = True ):
+def matrixAsList(matrix, value=True):
   """
   Turns a matrix into a list of coordinates matching the specified value
   """
-  rows, cols = len( matrix ), len( matrix[0] )
+  rows, cols = len(matrix), len(matrix[0])
   cells = []
-  for row in range( rows ):
-    for col in range( cols ):
+  for row in range(rows):
+    for col in range(cols):
       if matrix[row][col] == value:
-        cells.append( ( row, col ) )
+        cells.append((row, col))
   return cells
 
 def lookup(name, namespace):
@@ -466,7 +466,7 @@ def pause():
   raw_input()
   
   
-## code to handle timeouts
+# # code to handle timeouts
 import signal
 class TimeoutFunctionException(Exception):
     """Exception to raise on a timeout"""

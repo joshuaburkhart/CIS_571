@@ -16,13 +16,13 @@ import Tkinter
 
 _Windows = sys.platform == 'win32'  # True if on Win95/98/NT
 
-_root_window = None      # The root window for graphics output
-_canvas = None      # The canvas which holds graphics
-_canvas_xs = None      # Size of canvas object
+_root_window = None  # The root window for graphics output
+_canvas = None  # The canvas which holds graphics
+_canvas_xs = None  # Size of canvas object
 _canvas_ys = None
-_canvas_x = None      # Current position on canvas
+_canvas_x = None  # Current position on canvas
 _canvas_y = None
-_canvas_col = None      # Current colour (set to black below)
+_canvas_col = None  # Current colour (set to black below)
 _canvas_tsize = 12
 _canvas_tserifs = 0
 
@@ -36,7 +36,7 @@ if _Windows:
     _canvas_tfonts = ['times new roman', 'lucida console']
 else:
     _canvas_tfonts = ['times', 'lucidasans-24']
-    pass # XXX need defaults here
+    pass  # XXX need defaults here
 
 def sleep(secs):
     global _root_window
@@ -78,14 +78,14 @@ def begin_graphics(width=640, height=480, color=formatColor(0, 0, 0), title=None
       raise
 
     # Bind to key-down and key-up events
-    _root_window.bind( "<KeyPress>", _keypress )
-    _root_window.bind( "<KeyRelease>", _keyrelease )
-    _root_window.bind( "<FocusIn>", _clear_keys )
-    _root_window.bind( "<FocusOut>", _clear_keys )
-    _root_window.bind( "<Button-1>", _leftclick )
-    _root_window.bind( "<Button-2>", _rightclick )
-    _root_window.bind( "<Button-3>", _rightclick )
-    _root_window.bind( "<Control-Button-1>", _ctrl_leftclick)
+    _root_window.bind("<KeyPress>", _keypress)
+    _root_window.bind("<KeyRelease>", _keyrelease)
+    _root_window.bind("<FocusIn>", _clear_keys)
+    _root_window.bind("<FocusOut>", _clear_keys)
+    _root_window.bind("<Button-1>", _leftclick)
+    _root_window.bind("<Button-2>", _rightclick)
+    _root_window.bind("<Button-3>", _rightclick)
+    _root_window.bind("<Control-Button-1>", _ctrl_leftclick)
     _clear_keys()
 
 _leftclick_loc = None
@@ -124,7 +124,7 @@ def wait_for_click():
     sleep(0.05)  
 
 def draw_background():
-    corners = [(0,0), (0, _canvas_ys), (_canvas_xs, _canvas_ys), (_canvas_xs, 0)]
+    corners = [(0, 0), (0, _canvas_ys), (_canvas_xs, _canvas_ys), (_canvas_xs, 0)]
     polygon(corners, _bg_color, fillColor=_bg_color, filled=True, smoothed=False)
     
 def _destroy_window(event=None):
@@ -132,7 +132,7 @@ def _destroy_window(event=None):
 #    global _root_window
 #    _root_window.destroy()
 #    _root_window = None
-    #print "DESTROY"
+    # print "DESTROY"
 
 def end_graphics():
     global _root_window, _canvas, _mouse_enabled
@@ -164,7 +164,7 @@ def polygon(coords, outlineColor, fillColor=None, filled=1, smoothed=1, behind=0
   if filled == 0: fillColor = ""
   poly = _canvas.create_polygon(c, outline=outlineColor, fill=fillColor, smooth=smoothed, width=width)
   if behind > 0:    
-    _canvas.tag_lower(poly, behind) # Higher should be more visible
+    _canvas.tag_lower(poly, behind)  # Higher should be more visible
   return poly
   
 def square(pos, r, color, filled=1, behind=0):
@@ -188,7 +188,7 @@ def circle(pos, r, outlineColor, fillColor, endpoints=None, style='pieslice', wi
 def image(pos, file="../../blueghost.gif"):
     x, y = pos
     # img = PhotoImage(file=file)
-    return _canvas.create_image(x, y, image = Tkinter.PhotoImage(file=file), anchor = Tkinter.NW)
+    return _canvas.create_image(x, y, image=Tkinter.PhotoImage(file=file), anchor=Tkinter.NW)
     
     
 def refresh():
@@ -247,7 +247,7 @@ _got_release = None
 
 def _keypress(event):
     global _got_release
-    #remap_arrows(event)
+    # remap_arrows(event)
     _keysdown[event.keysym] = 1
     _keyswaiting[event.keysym] = 1
 #    print event.char, event.keycode
@@ -255,7 +255,7 @@ def _keypress(event):
 
 def _keyrelease(event):
     global _got_release
-    #remap_arrows(event)
+    # remap_arrows(event)
     try:
       del _keysdown[event.keysym]
     except:
@@ -266,13 +266,13 @@ def remap_arrows(event):
     # TURN ARROW PRESSES INTO LETTERS (SHOULD BE IN KEYBOARD AGENT)
     if event.char in ['a', 's', 'd', 'w']:
       return
-    if event.keycode in [37, 101]: # LEFT ARROW (win / x)
+    if event.keycode in [37, 101]:  # LEFT ARROW (win / x)
       event.char = 'a'
-    if event.keycode in [38, 99]: # UP ARROW
+    if event.keycode in [38, 99]:  # UP ARROW
       event.char = 'w'
-    if event.keycode in [39, 102]: # RIGHT ARROW
+    if event.keycode in [39, 102]:  # RIGHT ARROW
       event.char = 'd'
-    if event.keycode in [40, 104]: # DOWN ARROW
+    if event.keycode in [40, 104]:  # DOWN ARROW
       event.char = 's'
 
 def _clear_keys(event=None):
@@ -324,7 +324,7 @@ def move_to(object, x, y=None,
         
     horiz = True
     newCoords = []
-    current_x, current_y = _canvas.coords(object)[0:2] # first point
+    current_x, current_y = _canvas.coords(object)[0:2]  # first point
     for coord in  _canvas.coords(object):
       if horiz:  
         inc = x - current_x
@@ -362,22 +362,22 @@ def writePostscript(filename):
   "Writes the current canvas to a postscript file."    
   psfile = file(filename, 'w')
   psfile.write(_canvas.postscript(pageanchor='sw',
-                   y='0.c', 
+                   y='0.c',
                    x='0.c'))
   psfile.close()
   
 ghost_shape = [                
-    (0, - 0.5),
-    (0.25, - 0.75),
-    (0.5, - 0.5),
-    (0.75, - 0.75),
+    (0, -0.5),
+    (0.25, -0.75),
+    (0.5, -0.5),
+    (0.75, -0.75),
     (0.75, 0.5),
     (0.5, 0.75),
-    (- 0.5, 0.75),
-    (- 0.75, 0.5),
-    (- 0.75, - 0.75),
-    (- 0.5, - 0.5),
-    (- 0.25, - 0.75)
+    (-0.5, 0.75),
+    (-0.75, 0.5),
+    (-0.75, -0.75),
+    (-0.5, -0.5),
+    (-0.25, -0.75)
   ]
 
 if __name__ == '__main__':
@@ -386,5 +386,5 @@ if __name__ == '__main__':
   ghost_shape = [(x * 10 + 20, y * 10 + 20) for x, y in ghost_shape]
   g = polygon(ghost_shape, formatColor(1, 1, 1))
   move_to(g, (50, 50))
-  circle((150, 150), 20, formatColor(0.7, 0.3, 0.0), endpoints=[15, - 15])
+  circle((150, 150), 20, formatColor(0.7, 0.3, 0.0), endpoints=[15, -15])
   sleep(2)

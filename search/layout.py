@@ -20,7 +20,7 @@ class Layout:
   
   def __init__(self, layoutText):
     self.width = len(layoutText[0])
-    self.height= len(layoutText)
+    self.height = len(layoutText)
     self.walls = Grid(self.width, self.height, False)
     self.food = Grid(self.width, self.height, False)
     self.capsules = []
@@ -37,7 +37,7 @@ class Layout:
     global VISIBILITY_MATRIX_CACHE
     if reduce(str.__add__, self.layoutText) not in VISIBILITY_MATRIX_CACHE:
       from game import Directions
-      vecs = [(-0.5,0), (0.5,0),(0,-0.5),(0,0.5)]
+      vecs = [(-0.5, 0), (0.5, 0), (0, -0.5), (0, 0.5)]
       dirs = [Directions.NORTH, Directions.SOUTH, Directions.WEST, Directions.EAST]
       vis = Grid(self.width, self.height, {Directions.NORTH:set(), Directions.SOUTH:set(), Directions.EAST:set(), Directions.WEST:set(), Directions.STOP:set()})
       for x in range(self.width):
@@ -61,17 +61,17 @@ class Layout:
   def getRandomLegalPosition(self):
     x = random.choice(range(self.width))
     y = random.choice(range(self.height))
-    while self.isWall( (x, y) ):
+    while self.isWall((x, y)):
       x = random.choice(range(self.width))
       y = random.choice(range(self.height))
-    return (x,y)
+    return (x, y)
 
   def getRandomCorner(self):
-    poses = [(1,1), (1, self.height - 2), (self.width - 2, 1), (self.width - 2, self.height - 2)]
+    poses = [(1, 1), (1, self.height - 2), (self.width - 2, 1), (self.width - 2, self.height - 2)]
     return random.choice(poses)
 
   def getFurthestCorner(self, pacPos):
-    poses = [(1,1), (1, self.height - 2), (self.width - 2, 1), (self.width - 2, self.height - 2)]
+    poses = [(1, 1), (1, self.height - 2), (self.width - 2, 1), (self.width - 2, self.height - 2)]
     dist, pos = max([(manhattanDistance(p, pacPos), p) for p in poses])
     return pos
   
@@ -104,7 +104,7 @@ class Layout:
         layoutChar = layoutText[maxY - y][x]  
         self.processLayoutChar(x, y, layoutChar)
     self.agentPositions.sort()
-    self.agentPositions = [ ( i == 0, pos) for i, pos in self.agentPositions]
+    self.agentPositions = [ (i == 0, pos) for i, pos in self.agentPositions]
   
   def processLayoutChar(self, x, y, layoutChar):
     if layoutChar == '%':      
@@ -114,14 +114,14 @@ class Layout:
     elif layoutChar == 'o':    
       self.capsules.append((x, y))   
     elif layoutChar == 'P':    
-      self.agentPositions.append( (0, (x, y) ) )
+      self.agentPositions.append((0, (x, y)))
     elif layoutChar in ['G']:    
-      self.agentPositions.append( (1, (x, y) ) )
+      self.agentPositions.append((1, (x, y)))
       self.numGhosts += 1
     elif layoutChar in  ['1', '2', '3', '4']:
-      self.agentPositions.append( (int(layoutChar), (x,y)))
+      self.agentPositions.append((int(layoutChar), (x, y)))
       self.numGhosts += 1 
-def getLayout(name, back = 2):
+def getLayout(name, back=2):
   if name.endswith('.lay'):
     layout = tryToLoad('layouts/' + name)
     if layout == None: layout = tryToLoad(name)
@@ -131,7 +131,7 @@ def getLayout(name, back = 2):
   if layout == None and back >= 0:
     curdir = os.path.abspath('.')
     os.chdir('..')
-    layout = getLayout(name, back -1)
+    layout = getLayout(name, back - 1)
     os.chdir(curdir)
   return layout
 
